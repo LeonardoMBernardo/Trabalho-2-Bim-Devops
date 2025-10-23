@@ -1,0 +1,62 @@
+name: Automacoes-Repo
+
+
+on:
+push:
+branches: [ main ]
+workflow_dispatch: {}
+schedule:
+# agendamento: meia-noite (UTC) — ajustar se necessário
+- cron: '0 0 * * *'
+
+
+permissions:
+contents: write
+
+
+jobs:
+hello-world:
+name: Hello world
+runs-on: ubuntu-latest
+steps:
+- name: Hello world
+run: echo "Hello world from GitHub Actions!"
+
+
+push-info-and-utilities:
+name: Info do push + utilitários
+runs-on: ubuntu-latest
+needs: hello-world
+steps:
+- name: Checkout
+uses: actions/checkout@v4
+with:
+fetch-depth: 0
+
+
+- name: Quem fez o push e timestamp
+run: |
+echo "Actor: ${{ github.actor }}"
+echo "Pusher (evento): ${{ github.event.pusher.name || 'n/a' }}"
+echo "Commit timestamp: ${{ github.event.head_commit.timestamp || 'n/a' }}"
+
+
+- name: Calcular 2+2 (variável no terminal)
+run: |
+RESULT=$((2+2))
+echo "RESULT=$RESULT"
+
+
+- name: Listar arquivos do repo
+run: ls -la
+
+
+- name: Contar arquivos .html
+run: |
+shopt -s nullglob || true
+COUNT=$(ls -1 *.html 2>/dev/null | wc -l)
+echo "HTML_FILES=$COUNT"
+
+
+- name: Criar README automático e commitar
+echo "HTML: $HTML, CSS: $CSS, JS: $JS"
